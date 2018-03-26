@@ -5,3 +5,12 @@ html {
   *, *:before, *:after {
     box-sizing: inherit;
   }
+
+.form-group {
+  padding: .25rem;
+}
+
+label {
+  font-weight: bold;
+  padding: .25rem;
+}
