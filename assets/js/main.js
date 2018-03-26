@@ -2,9 +2,12 @@ $(document).ready(function() {
 
 //Variables
 var name = '';
+var currentTime = moment().format('hh:mm a');
+console.log(currentTime);
 var destination = '';
 var time = '00:00 AM';
 var minutes = 0;
+
 
 // Initialize Firebase
 var config = {
