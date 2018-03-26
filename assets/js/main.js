@@ -22,11 +22,9 @@ var database = firebase.database();
 //Functions
 //Pull data down from Firebase and display it. 
     function init() {
-        $('.js-table-body').val('');
         //Listens for new data added to spreadsheet then prints it to DOM
         database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
             let s = snapshot.val();
-
             //Targets the table body element
             $('.js-table-body').append('<tr><td>' + s.name + '</td><td>' + s.destination +'</td><td>' + s.frequency + '</td><td>' + s.arrival + '</td><td>' + s.minutes + '</td></tr>');
         });
@@ -42,20 +40,24 @@ var database = firebase.database();
         database.ref().push({
             name: name,
             destination: destination,
-            frequency: time,
-            arrival: 'arrival',
+            frequency: minutes,
+            arrival: time,
             minutes: 'minutes',
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
-    clearText();
-    init ();
+    clear();
     }
 
-    function clearText() {
+    function clear() {
+        //clears text input
         $('#js-trainName').val('');
         $('#js-destination').val('');
         $('#js-firstTrain').val('');
         $('#js-minutes').val('');
+        //clears rows
+        $('.js-table-body tr').remove();
+        //Call init to reset display
+        init();
     }
 
 //Events
