@@ -2,8 +2,6 @@ $(document).ready(function() {
 
 //Variables
 var name = '';
-var currentTime = moment().format('hh:mm a');
-console.log(currentTime);
 var destination = '';
 var time = '00:00 AM';
 var minutes = 0;
@@ -28,8 +26,21 @@ var database = firebase.database();
         //Listens for new data added to spreadsheet then prints it to DOM
         database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
             let s = snapshot.val();
+            //Converts user's input to moment value
+            let firstTrain = moment(s.arrival, 'hh:mm').subtract(1, 'd');
+            //Calulcate difference between current time and first train in minutes.
+            let timeDifference = moment().diff(moment(firstTrain), 'minutes');
+            //Finds the remainder of the time difference
+            let remainder = timeDifference % s.frequency;
+            //Minutes until next train
+            let nextArrival = s.frequency - remainder;
+            //Adds nextArrival to current time
+            let nextTrain = moment().add(nextArrival, 'minutes');
+            //Converts time to minutes
+            let nextTrainConverted = moment(nextTrain).format('hh:mm a');
+
             //Targets the table body element
-            $('.js-table-body').append('<tr><td>' + s.name + '</td><td>' + s.destination +'</td><td>' + s.frequency + '</td><td>' + s.arrival + '</td><td>' + s.minutes + '</td></tr>');
+            $('.js-table-body').append('<tr><td>' + s.name + '</td><td>' + s.destination +'</td><td>' + s.frequency + '</td><td>' + nextTrainConverted + '</td><td>' + nextArrival + '</td></tr>');
         });
     }
 
@@ -45,9 +56,10 @@ var database = firebase.database();
             destination: destination,
             frequency: minutes,
             arrival: time,
-            minutes: 'minutes',
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
+
+
     clear();
     }
 
